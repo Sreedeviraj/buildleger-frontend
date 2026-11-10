@@ -1,7 +1,8 @@
 // Shared data shapes. The backend API will return exactly these shapes.
 // All money amounts are whole rupees stored as numbers — never formatted strings.
 
-export type Role = 'owner' | 'staff';
+/** owner: everything. manager: everything except the team and deleting projects. staff: adds entries only. */
+export type Role = 'owner' | 'manager' | 'staff';
 
 export interface Company {
   id: string;
@@ -15,6 +16,38 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  createdAt: string;
+}
+
+export interface PendingInvite {
+  id: string;
+  name: string;
+  email: string;
+  role: Exclude<Role, 'owner'>;
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface Team {
+  members: TeamMember[];
+  invites: PendingInvite[];
+}
+
+export type InviteInput = Pick<PendingInvite, 'name' | 'email' | 'role'>;
+
+/** What the invite page shows before the person sets a password. */
+export interface InviteDetails {
+  name: string;
+  email: string;
+  role: PendingInvite['role'];
+  companyName: string;
 }
 
 export interface Session {

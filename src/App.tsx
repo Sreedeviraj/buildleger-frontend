@@ -17,6 +17,7 @@ import SettingsPage from './pages/SettingsPage';
 import SuppliersPage from './pages/SuppliersPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
+import AcceptInvitePage from './pages/auth/AcceptInvitePage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,6 +49,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/invite/:token" element={<AcceptInvitePage />} />
         <Route element={<RequireAuth />}>
           <Route index element={<HomePage />} />
           <Route path="projects" element={<ProjectsPage />} />

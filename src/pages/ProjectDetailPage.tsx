@@ -31,6 +31,7 @@ import { StatusBadge } from '../components/ui/StatusBadge';
 import { EmptyState, ErrorBlock, LoadingBlock } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
 import { projectAlerts, sortAlerts } from '../lib/alerts';
+import { canManage } from '../lib/constants';
 import { forProject, type ProjectSummary } from '../lib/calc';
 import { errorMessage } from '../lib/errors';
 import { formatDate, formatDateTime, formatINR, todayISO } from '../lib/format';
@@ -108,6 +109,7 @@ export default function ProjectDetailPage() {
 
   const { project, summary: s } = item;
   const isOwner = session?.user.role === 'owner';
+  const canEdit = canManage(session?.user.role);
   const isCompleted = project.status === 'completed';
   const alerts = sortAlerts(projectAlerts(project, s));
   const installments = finance.installments.filter((i) => i.projectId === id);
@@ -151,13 +153,13 @@ export default function ProjectDetailPage() {
   const actionItems: MenuItem[] = [
     { label: 'Send statement on WhatsApp', icon: MessageCircle, to: whatsappLink(project, s, session?.company.name ?? ''), external: true },
     ...(project.clientPhone ? [{ label: 'Call client', icon: Phone, to: `tel:${project.clientPhone}`, external: true }] : []),
-    ...(isOwner
+    ...(canEdit
       ? [
           { label: 'Edit project', icon: Pencil, to: `/projects/${project.id}/edit` },
           { label: 'Budget setup', icon: SlidersHorizontal, to: `/projects/${project.id}/budget` },
           { label: isCompleted ? 'Reopen project' : 'Mark as completed', icon: isCompleted ? RotateCcw : CircleCheck, onSelect: () => setConfirm('status') },
           { label: project.archived ? 'Restore from archive' : 'Archive project', icon: project.archived ? ArchiveRestore : Archive, onSelect: () => setConfirm('archive') },
-          ...(ledgerRows.length === 0 ? [{ label: 'Delete project', icon: Trash2, danger: true, onSelect: () => setConfirm('delete') }] : []),
+          ...(isOwner && ledgerRows.length === 0 ? [{ label: 'Delete project', icon: Trash2, danger: true, onSelect: () => setConfirm('delete') }] : []),
         ]
       : []),
   ];
@@ -259,13 +261,13 @@ export default function ProjectDetailPage() {
 
       <div className="pt-4" role="tabpanel">
         {tab === 'budget' && <JobCostTable project={project} summary={s} rows={ledgerRows} revisions={revisions.data ?? []} />}
-        {tab === 'transactions' && <TransactionLedger rows={ledgerRows} filter={filter} onFilterChange={setFilter} canEdit={isOwner} />}
+        {tab === 'transactions' && <TransactionLedger rows={ledgerRows} filter={filter} onFilterChange={setFilter} canEdit={canEdit} />}
         {tab === 'client' && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <PaymentSchedule project={project} installments={installments} summary={s} today={today} canEdit={isOwner} />
+            <PaymentSchedule project={project} installments={installments} summary={s} today={today} canEdit={canEdit} />
             <div>
               <h2 className="mb-3 text-lg font-semibold text-slate-900">Payment history</h2>
-              <TransactionLedger rows={ledgerRows.filter((r) => r.type === 'receipt' || r.type === 'refund')} filter={clientFilter} onFilterChange={setClientFilter} canEdit={isOwner} hideViews />
+              <TransactionLedger rows={ledgerRows.filter((r) => r.type === 'receipt' || r.type === 'refund')} filter={clientFilter} onFilterChange={setClientFilter} canEdit={canEdit} hideViews />
             </div>
           </div>
         )}

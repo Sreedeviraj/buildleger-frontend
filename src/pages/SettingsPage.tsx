@@ -4,10 +4,12 @@ import { Building2, LogOut, RotateCcw, UserRound } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { PageHeader } from '../components/layout/PageHeader';
+import { TeamCard } from '../components/settings/TeamCard';
 import { Button } from '../components/ui/Button';
 import { Card, CardTitle } from '../components/ui/Card';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { useToast } from '../components/ui/Toast';
+import { ROLE_LABEL } from '../lib/constants';
 
 function Row({ label, value, capitalize = false }: { label: string; value: string; capitalize?: boolean }) {
   return (
@@ -37,7 +39,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader title="Settings" subtitle="Your company and login details." />
+      <PageHeader title="Settings" subtitle="Your company, login and team." />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card className="p-5">
@@ -67,9 +69,11 @@ export default function SettingsPage() {
           <dl className="divide-y divide-slate-100">
             <Row label="Name" value={session.user.name} />
             <Row label="Email" value={session.user.email} />
-            <Row label="Role" value={session.user.role} capitalize />
+            <Row label="Role" value={ROLE_LABEL[session.user.role]} />
           </dl>
         </Card>
+
+        <TeamCard />
 
         <Card className="p-5 lg:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -26,6 +26,10 @@ export function useBudgetRevisions(projectId: string) {
   return useQuery({ queryKey: ['budgetRevisions', projectId], queryFn: () => api.listBudgetRevisions(projectId) });
 }
 
+export function useTeam() {
+  return useQuery({ queryKey: ['team'], queryFn: api.listTeam });
+}
+
 export function useAudit(filter: { projectId?: string; entityId?: string }, enabled = true) {
   return useQuery({ queryKey: ['audit', filter], queryFn: () => api.listAudit(filter), enabled });
 }
@@ -130,3 +134,8 @@ export const useVoidBill = () => useApiMutation(spread(api.voidBill));
 export const useAddSupplier = () => useApiMutation(api.addSupplier);
 export const useUpdateSupplier = () => useApiMutation(spread(api.updateSupplier));
 export const useSetSupplierArchived = () => useApiMutation(spread(api.setSupplierArchived));
+
+export const useInviteMember = () => useApiMutation(api.inviteMember);
+export const useRevokeInvite = () => useApiMutation(api.revokeInvite);
+export const useChangeMemberRole = () => useApiMutation(spread(api.changeMemberRole));
+export const useRemoveMember = () => useApiMutation(api.removeMember);

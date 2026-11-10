@@ -23,7 +23,7 @@ import {
   type DateRange,
   type FinanceRecords,
 } from '../lib/calc';
-import { categoryLabel, findOption, SUPPLIER_TYPES } from '../lib/constants';
+import { canManage, categoryLabel, findOption, SUPPLIER_TYPES } from '../lib/constants';
 import { errorMessage } from '../lib/errors';
 import { downloadCSV } from '../lib/export';
 import { formatDate, formatINR, formatMonth, toISODate, todayISO } from '../lib/format';
@@ -180,7 +180,7 @@ export default function ReportsPage() {
         today={today}
         ledgerFilter={ledgerFilter}
         onLedgerFilter={setLedgerFilter}
-        canEdit={session?.user.role === 'owner'}
+        canEdit={canManage(session?.user.role)}
       />
     </>
   );

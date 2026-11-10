@@ -9,6 +9,8 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (input: SignupInput) => Promise<void>;
   logout: () => Promise<void>;
+  /** Joins a company from an invite link and logs in. */
+  acceptInvite: (token: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -37,6 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signup: async (input) => {
       queryClient.clear();
       setSession(await api.signup(input));
+    },
+    acceptInvite: async (token, password) => {
+      queryClient.clear();
+      setSession(await api.acceptInvite(token, password));
     },
     logout: async () => {
       await api.logout();

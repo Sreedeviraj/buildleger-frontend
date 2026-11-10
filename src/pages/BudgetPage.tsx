@@ -10,7 +10,7 @@ import { AmountField, TextAreaField } from '../components/ui/Fields';
 import { ErrorBlock, LoadingBlock } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
 import { sum } from '../lib/calc';
-import { categoryLabel, EXPENSE_CATEGORIES } from '../lib/constants';
+import { canManage, categoryLabel, EXPENSE_CATEGORIES } from '../lib/constants';
 import { errorMessage } from '../lib/errors';
 import { formatDateTime, formatINR } from '../lib/format';
 import type { CategoryBudgets, ExpenseCategory } from '../types';
@@ -41,8 +41,8 @@ function BudgetForm({ project, summary }: NonNullable<ReturnType<typeof useProje
   const allocated = sum(Object.values(budgets).map((v) => v ?? 0));
   const unallocated = (estimatedCost ?? 0) - allocated;
 
-  if (session?.user.role !== 'owner') {
-    return <ErrorBlock message="Only the owner can change the budget." />;
+  if (!canManage(session?.user.role)) {
+    return <ErrorBlock message="Only the owner or a manager can change the budget." />;
   }
 
   const setCategory = (category: ExpenseCategory, raw: string) => {

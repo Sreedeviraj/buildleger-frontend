@@ -12,7 +12,7 @@ import { ChoiceGrid, inputClass, TextAreaField, TextField } from '../components/
 import { EmptyState, ErrorBlock, LoadingBlock } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
 import { billOutstanding, billPayments, isLive, supplierBalances, sum, type SupplierBalance } from '../lib/calc';
-import { findOption, SUPPLIER_TYPES } from '../lib/constants';
+import { canManage, findOption, SUPPLIER_TYPES } from '../lib/constants';
 import { errorMessage } from '../lib/errors';
 import { downloadCSV } from '../lib/export';
 import { formatDate, formatINR, todayISO } from '../lib/format';
@@ -25,7 +25,7 @@ export default function SuppliersPage() {
   const { session } = useAuth();
   const toast = useToast();
   const setArchived = useSetSupplierArchived();
-  const isOwner = session?.user.role === 'owner';
+  const isOwner = canManage(session?.user.role);
   const [showArchived, setShowArchived] = useState(false);
   const [type, setType] = useState<SupplierType | ''>('');
   const [search, setSearch] = useState('');

@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
+import { ROLE_LABEL } from '../../lib/constants';
 import { buttonClass } from '../ui/Button';
 
 const NAV = [
@@ -112,7 +113,7 @@ export function AppLayout() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white">{session.user.name}</p>
-            <p className="text-xs text-navy-200 capitalize">{session.user.role}</p>
+            <p className="text-xs text-navy-200">{ROLE_LABEL[session.user.role]}</p>
           </div>
           <button
             type="button"
